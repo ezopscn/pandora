@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/-Golang 1.23-blue?style=flat-square&logo=go&logoColor=white" alt="">
   </a>
   <a>
-    <img src="https://img.shields.io/badge/-Gin 1.9.x-blue?style=flat-square&logo=gin&logoColor=white" alt="">
+    <img src="https://img.shields.io/badge/-Gin 1.10-blue?style=flat-square&logo=gin&logoColor=white" alt="">
   </a>
   <a>
     <img src="https://img.shields.io/badge/-MySQL-blue?style=flat-square&logo=mysql&logoColor=white" alt="">
