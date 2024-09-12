@@ -1,0 +1,134 @@
+####################################################################################
+# 公共通用配置
+####################################################################################
+common:
+  # MySQL 数据库
+  mysql:
+    # 主机地址
+    host: 127.0.0.1
+    # 端口
+    port: 13306
+    # 数据库
+    database: pandora
+    # 用户名
+    username: root
+    # 密码
+    password: 123456
+    # 字符集
+    charset: utf8mb4
+    # 排序规则
+    collation: utf8mb4_bin
+    # 超时时间，单位毫秒
+    timeout: 1000
+    # 额外参数
+    extra-param: parseTime=True&loc=Local
+    # 最大打开链接数
+    max-open-conns: 100
+    # 最大空闲连接数
+    max-idle-conns: 10
+    # 空闲连接最大超时时间，单位分钟
+    max-idle-time: 30
+  # Redis 配置
+  redis:
+    # 主机地址
+    host: 127.0.0.1
+    # 端口
+    port: 16379
+    # 数据库
+    database: 0
+    # 密码，没有就不设置
+    password: ""
+    # 连接超时时间，单位秒
+    timeout: 5
+    # 最大连接数，一般比 CPU 核数 4 倍少一点
+    max-open-conns: 12
+    # 最小空闲连接
+    min-idle-conns: 5
+    # 最大空闲连接
+    max-idle-conns: 10
+    # 最大空闲时长，单位分钟
+    max-idle-time: 10
+
+####################################################################################
+# Server 独有配置
+####################################################################################
+server:
+  system:
+    # 监听端口
+    listen: 0.0.0.0
+    # 监听地址
+    port: 10000
+  log:
+    # 系统日志
+    system:
+      # 是否打印日志到文件
+      enabled: true
+      # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
+      level: -1
+      # 日志保存目录和文件名称
+      path: logs/server-system
+      # 日志切割配置，单位 M
+      max-size: 100
+      # 日志保留天数
+      max-age: 7
+      # 日志保留个数
+      max-backups: 10
+      # 是否压缩
+      compress: false
+    # 访问日志
+    access:
+      enabled: true
+      # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
+      level: -1
+      # 日志保存目录和文件名称
+      path: logs/server-access
+      # 日志切割配置，单位 M
+      max-size: 100
+      # 日志保留天数
+      max-age: 7
+      # 日志保留个数
+      max-backups: 10
+      # 是否压缩
+      compress: false
+
+####################################################################################
+# Alert 独有配置
+####################################################################################
+alert:
+  system:
+    # 监听端口
+    listen: 0.0.0.0
+    # 监听地址
+    port: 10001
+  log:
+    # 系统日志
+    system:
+      # 是否打印日志到文件
+      enabled: true
+      # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
+      level: -1
+      # 日志保存目录和文件名称
+      path: logs/alert-system
+      # 日志切割配置，单位 M
+      max-size: 100
+      # 日志保留天数
+      max-age: 7
+      # 日志保留个数
+      max-backups: 10
+      # 是否压缩
+      compress: false
+    # 访问日志
+    access:
+      enabled: true
+      # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
+      level: -1
+      # 日志保存目录和文件名称
+      path: logs/alert-access
+      # 日志切割配置，单位 M
+      max-size: 100
+      # 日志保留天数
+      max-age: 7
+      # 日志保留个数
+      max-backups: 10
+      # 是否压缩
+      compress: false
