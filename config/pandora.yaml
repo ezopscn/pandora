@@ -62,7 +62,7 @@ server:
     # 系统日志
     system:
       # 是否打印日志到文件
-      enabled: true
+      enabled: false
       # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
       level: -1
       # 日志保存目录和文件名称
@@ -77,7 +77,7 @@ server:
       compress: false
     # 访问日志
     access:
-      enabled: true
+      enabled: false
       # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
       level: -1
       # 日志保存目录和文件名称
@@ -104,7 +104,7 @@ alert:
     # 系统日志
     system:
       # 是否打印日志到文件
-      enabled: true
+      enabled: false
       # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
       level: -1
       # 日志保存目录和文件名称
@@ -119,7 +119,7 @@ alert:
       compress: false
     # 访问日志
     access:
-      enabled: true
+      enabled: false
       # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
       level: -1
       # 日志保存目录和文件名称

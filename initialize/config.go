@@ -2,8 +2,8 @@ package initialize
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"pandora/common"
 	"pandora/pkg/utils"
@@ -23,8 +23,10 @@ func Config() {
 	filename := common.ConfigFileName
 	exist := utils.FileExist(filename)
 	if exist {
+		fmt.Println("开始加载指定的配置文件:", filename)
 		bs, err = os.ReadFile(filename)
 	} else {
+		fmt.Println("开始加载内置的配置文件:", filename)
 		bs, err = common.FS.ReadFile(filename)
 	}
 	if err != nil {
@@ -48,6 +50,4 @@ func Config() {
 	if err != nil {
 		panic(err)
 	}
-
-	log.Println("配置文件初始化完成：", filename)
 }

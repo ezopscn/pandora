@@ -9,7 +9,7 @@ import (
 
 // 全局工具
 var (
-	FS         embed.FS           // 配置打包
+	FS         embed.FS           // 文件打包
 	SystemLog  *zap.SugaredLogger // 系统日志工具
 	AccessLog  *zap.SugaredLogger // 访问日志工具
 	MySQLDB    *gorm.DB           // 数据库连接
@@ -28,7 +28,9 @@ const (
 
 // 系统可变配置
 var (
-	ConfigFileName = "config/pandora.yaml" // 配置文件
-	SystemName     = ""                    // 系统名称
-	SystemVersion  = "0.0"                 // 系统版本
+	ConfigFileName = "pandora.yaml" // 配置文件
+	ListenAddress  = "0.0.0.0"      // 监听地址
+	ListenPort     = ""             // 监听端口
+	SystemName     = ""             // 系统名称
+	SystemVersion  = "1.0"          // 系统版本
 )

@@ -40,6 +40,9 @@
 # 命令行工具
 go get -u github.com/spf13/cobra
 
+# 命令行表格
+go get -u github.com/jedib0t/go-pretty/v6/table
+
 # Golang web 开发框架
 go get -u github.com/gin-gonic/gin
 
