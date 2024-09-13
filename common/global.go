@@ -28,9 +28,10 @@ const (
 
 // 系统可变配置
 var (
-	ConfigFileName = "pandora.yaml" // 配置文件
-	ListenAddress  = "0.0.0.0"      // 监听地址
-	ListenPort     = ""             // 监听端口
-	SystemName     = ""             // 系统名称
-	SystemVersion  = "1.0"          // 系统版本
+	ConfigFileName  = "pandora.yaml" // 配置文件
+	VersionFileName = "version"      // 版本文件
+	ListenAddress   = "0.0.0.0"      // 监听地址
+	ListenPort      = ""             // 监听端口
+	SystemName      = ""             // 系统名称
+	SystemVersion   = ""             // 系统版本
 )

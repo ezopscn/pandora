@@ -57,8 +57,3 @@ func NewLogger(cfg common.LoggerConfiguration) *zap.SugaredLogger {
 	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 	return logger.Sugar()
 }
-
-//system_logger := NewLogger(common.Config.Server.Log.System)
-//common.SystemLog = system_logger
-//access_logger := NewLogger(common.Config.Server.Log.Access)
-//common.AccessLog = access_logger

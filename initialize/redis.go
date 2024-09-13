@@ -36,9 +36,8 @@ func Redis() {
 	// 测试能否连接
 	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		common.SystemLog.Error("Redis 连接初始化失败")
 		common.SystemLog.Error(err.Error())
-		panic(err)
+		panic("Redis 连接初始化失败")
 	}
 
 	// 配置全局，方便后续使用

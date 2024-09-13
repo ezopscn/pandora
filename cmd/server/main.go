@@ -87,8 +87,8 @@ var startCmd = &cobra.Command{
 		initialize.Config()
 
 		// 日志初始化
-		common.SystemLog = initialize.NewLogger(common.Config.Server.Log.System)
-		common.AccessLog = initialize.NewLogger(common.Config.Server.Log.Access)
+		common.SystemLog = initialize.NewLogger(common.Config.Server.Log.System) // 系统日志初始化
+		common.AccessLog = initialize.NewLogger(common.Config.Server.Log.Access) // 访问日志初始化
 
 		// 没设置参数则使用配置文件中的
 		if listenAddress == "" {
@@ -105,11 +105,12 @@ var startCmd = &cobra.Command{
 
 		// 路由初始化
 		r := initialize.ServerRouter()
-		common.SystemLog.Info("服务的监听地址为:", fmt.Sprintf("%s:%s", listenAddress, listenPort))
+		conn := fmt.Sprintf("%s:%s", listenAddress, listenPort)
+		common.SystemLog.Info("服务的监听地址为:", conn)
 
 		// 配置服务
 		server := http.Server{
-			Addr:    fmt.Sprintf("%s:%s", listenAddress, listenPort),
+			Addr:    conn,
 			Handler: r,
 		}
 
@@ -144,7 +145,19 @@ func execute() {
 	// 初始化变量
 	common.FS = config.Fs
 	common.SystemName = systemName
-	if err := rootCmd.Execute(); err != nil {
+
+	// 读取版本号
+	version, err := common.FS.ReadFile(common.VersionFileName)
+	if err != nil {
+		panic(err)
+	}
+
+	// 设置全局版本号
+	if string(version) != "" {
+		common.SystemVersion = string(version)
+	}
+
+	if err = rootCmd.Execute(); err != nil {
 		os.Exit(0)
 	}
 }

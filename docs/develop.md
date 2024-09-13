@@ -22,6 +22,7 @@
 
 - [x] Go：Google 开发的开源编程语言，诞生于 2006 年 1 月 2 日 15 点 4 分 5 秒 [:octocat:](https://github.com/golang/go)
 - [x] Cobra：CLI 开发参数处理工具 [:octocat:](https://github.com/spf13/cobra)
+- [x] Table：命令行表格输出工具 [:octocat:](https://github.com/jedib0t/go-pretty/v6/table)
 - [x] Embed：go 1.16 新增的文件嵌入属性, 轻松将静态文件打包到编译后的二进制应用中
 - [x] Gin：用 Go 编写的高性能 HTTP Web 框架 [:octocat:](https://github.com/gin-gonic/gin)
 - [x] Viper：配置管理工具, 支持多种配置文件类型 [:octocat:](https://github.com/spf13/viper)

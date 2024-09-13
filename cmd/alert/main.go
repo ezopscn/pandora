@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"
@@ -55,6 +56,19 @@ var infoCmd = &cobra.Command{
 	},
 }
 
+// 心跳探测
+func heartbeat(rdb *redis.Client, prefix string, clientId string) {
+	ticker := time.NewTicker(5 * time.Second) // 心跳间隔
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			rdb.Publish(context.Background(), prefix+":heartbeat:", clientId)              // 发布心跳信号
+			rdb.SetEx(context.Background(), prefix+":"+clientId, "online", 10*time.Second) // 更新TTL
+		}
+	}
+}
+
 // 启动命令
 var startCmd = &cobra.Command{
 	Use:   "start",
@@ -87,8 +101,8 @@ var startCmd = &cobra.Command{
 		initialize.Config()
 
 		// 日志初始化
-		common.SystemLog = initialize.NewLogger(common.Config.Alert.Log.System)
-		common.AccessLog = initialize.NewLogger(common.Config.Alert.Log.Access)
+		common.SystemLog = initialize.NewLogger(common.Config.Alert.Log.System) // 系统日志初始化
+		common.AccessLog = initialize.NewLogger(common.Config.Alert.Log.Access) // 访问日志初始化
 
 		// 没设置参数则使用配置文件中的
 		if listenAddress == "" {
@@ -103,15 +117,35 @@ var startCmd = &cobra.Command{
 		// Logo
 		fmt.Println(common.ALERT_LOGO)
 
+		// 初始化 Redis 连接
+		initialize.Redis()
+
 		// 路由初始化
 		r := initialize.AlertRouter()
-		common.SystemLog.Info("服务的监听地址为:", fmt.Sprintf("%s:%s", listenAddress, listenPort))
+		conn := fmt.Sprintf("%s:%s", listenAddress, listenPort)
+		common.SystemLog.Info("服务的监听地址为:", conn)
 
 		// 配置服务
 		server := http.Server{
-			Addr:    fmt.Sprintf("%s:%s", listenAddress, listenPort),
+			Addr:    conn,
 			Handler: r,
 		}
+
+		// 获取本机内网 IP
+		ip, err := utils.GetHostIP()
+		if err != nil {
+			common.SystemLog.Error(err)
+			panic("本机内网 IP 获取失败")
+		}
+
+		// 客户端标识
+		clientId := fmt.Sprintf("%s:%s", ip, listenPort+"."+utils.RandNumberString(3))
+
+		// 客户端启动时注册
+		common.RedisCache.SetEx(context.Background(), systemName+":"+clientId, "online", 10*time.Second) // 设置 10 秒 TTL
+		go heartbeat(common.RedisCache, systemName, clientId)
+
+		// 订阅 Redis
 
 		// 启动服务
 		go func() {
@@ -130,7 +164,7 @@ var startCmd = &cobra.Command{
 		// 等待5秒然后停止服务
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		err := server.Shutdown(ctx)
+		err = server.Shutdown(ctx)
 		if err != nil {
 			common.SystemLog.Error(err.Error())
 			panic(err)
@@ -144,7 +178,19 @@ func execute() {
 	// 初始化变量
 	common.FS = config.Fs
 	common.SystemName = systemName
-	if err := rootCmd.Execute(); err != nil {
+
+	// 读取版本号
+	version, err := common.FS.ReadFile(common.VersionFileName)
+	if err != nil {
+		panic(err)
+	}
+
+	// 设置全局版本号
+	if string(version) != "" {
+		common.SystemVersion = string(version)
+	}
+
+	if err = rootCmd.Execute(); err != nil {
 		os.Exit(0)
 	}
 }
