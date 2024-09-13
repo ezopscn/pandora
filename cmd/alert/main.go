@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/redis/go-redis/v9"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"
@@ -12,7 +13,9 @@ import (
 	"pandora/common"
 	"pandora/config"
 	"pandora/initialize"
+	"pandora/pkg/ticker"
 	"pandora/pkg/utils"
+	"strings"
 	"time"
 )
 
@@ -54,19 +57,6 @@ var infoCmd = &cobra.Command{
 		})
 		fmt.Println(t.Render())
 	},
-}
-
-// 心跳探测
-func heartbeat(rdb *redis.Client, prefix string, clientId string) {
-	ticker := time.NewTicker(5 * time.Second) // 心跳间隔
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ticker.C:
-			rdb.Publish(context.Background(), prefix+":heartbeat:", clientId)              // 发布心跳信号
-			rdb.SetEx(context.Background(), prefix+":"+clientId, "online", 10*time.Second) // 更新TTL
-		}
-	}
 }
 
 // 启动命令
@@ -117,40 +107,34 @@ var startCmd = &cobra.Command{
 		// Logo
 		fmt.Println(common.ALERT_LOGO)
 
+		// 客户端标识
+		id, _ := uuid.NewUUID()
+		common.SystemUUID = id.String()
+		common.SystemLog.Info("系统启动标识UUID：", common.SystemUUID)
+
 		// 初始化 Redis 连接
 		initialize.Redis()
 
-		// 路由初始化
-		r := initialize.AlertRouter()
-		conn := fmt.Sprintf("%s:%s", listenAddress, listenPort)
-		common.SystemLog.Info("服务的监听地址为:", conn)
+		// 客户端启动时注册
+		go ticker.HeartbeatTicker(common.RedisCache, strings.ToUpper(systemName)+"-UUID", common.SystemUUID)
 
-		// 配置服务
+		// 竞选 Master
+		go ticker.TryToBecomeMaster(common.RedisCache, common.SystemUUID)
+
+		// 数据接口部分
+		r := initialize.AlertRouter() // 路由初始化
+		addr := fmt.Sprintf("%s:%s", listenAddress, listenPort)
+		common.SystemLog.Info("服务的监听地址为：", addr)
+
 		server := http.Server{
-			Addr:    conn,
+			Addr:    addr,
 			Handler: r,
 		}
-
-		// 获取本机内网 IP
-		ip, err := utils.GetHostIP()
-		if err != nil {
-			common.SystemLog.Error(err)
-			panic("本机内网 IP 获取失败")
-		}
-
-		// 客户端标识
-		clientId := fmt.Sprintf("%s:%s", ip, listenPort+"."+utils.RandNumberString(3))
-
-		// 客户端启动时注册
-		common.RedisCache.SetEx(context.Background(), systemName+":"+clientId, "online", 10*time.Second) // 设置 10 秒 TTL
-		go heartbeat(common.RedisCache, systemName, clientId)
-
-		// 订阅 Redis
 
 		// 启动服务
 		go func() {
 			err := server.ListenAndServe()
-			if err != nil && err != http.ErrServerClosed {
+			if err != nil && !errors.Is(err, http.ErrServerClosed) {
 				common.SystemLog.Error(err.Error())
 				panic(err)
 			}
@@ -164,7 +148,7 @@ var startCmd = &cobra.Command{
 		// 等待5秒然后停止服务
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		err = server.Shutdown(ctx)
+		err := server.Shutdown(ctx)
 		if err != nil {
 			common.SystemLog.Error(err.Error())
 			panic(err)

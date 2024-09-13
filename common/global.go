@@ -34,4 +34,5 @@ var (
 	ListenPort      = ""             // 监听端口
 	SystemName      = ""             // 系统名称
 	SystemVersion   = ""             // 系统版本
+	SystemUUID      = ""             // 进程标识
 )

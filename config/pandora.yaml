@@ -57,7 +57,7 @@ server:
     # 监听端口
     listen: 0.0.0.0
     # 监听地址
-    port: 10000
+    port: 10001
   log:
     # 系统日志
     system:
@@ -99,7 +99,7 @@ alert:
     # 监听端口
     listen: 0.0.0.0
     # 监听地址
-    port: 10001
+    port: 20001
   log:
     # 系统日志
     system:

@@ -56,6 +56,9 @@ go get -u go.uber.org/zap
 # 日志切割
 go get -u github.com/natefinch/lumberjack
 
+# UUID
+go get -u github.com/google/uuid
+
 # 数据库 GORM
 go get -u gorm.io/gorm
 
