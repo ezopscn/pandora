@@ -12,7 +12,7 @@ import (
 func TryToBecomeMaster(rdb *redis.Client, id string) {
 	ctx := context.Background()
 	key := "PANDORA-ALERT-MASTER-ID"
-	expire := time.Second * 30 // 过期 30 秒
+	expire := time.Second * 30 // 过期 30 秒，意味着 Master 角色切换需要 30s
 	for {
 		// 获取指定 Key 的 Value
 		r1, err1 := rdb.Get(ctx, key).Result()
