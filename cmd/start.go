@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"pandora/common"
 	"pandora/initialize"
+	"pandora/pkg/ticker"
 	"pandora/pkg/utils"
 	"time"
 )
@@ -64,6 +65,10 @@ var startCmd = &cobra.Command{
 
 		// 初始化 Redis 连接
 		initialize.Redis()
+
+		// 节点注册
+		go ticker.HeartbeatTicker(common.RedisCache, common.SystemUUID)      // 心跳上报
+		go ticker.MasterElectionTicker(common.RedisCache, common.SystemUUID) // Master 竞选
 
 		// 数据接口部分
 		r := initialize.Router() // 路由初始化

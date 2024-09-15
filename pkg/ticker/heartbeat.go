@@ -10,7 +10,7 @@ import (
 // 周期性心跳上报
 func HeartbeatTicker(rdb *redis.Client, id string) {
 	ctx := context.Background()
-	key := common.SYSTEM_TITLE + ":UUID:" + id
+	key := common.RKP_NODE_ID + id
 	value := "online"
 	expire := 10 * time.Second            // 过期时间，10s
 	tk := time.NewTicker(5 * time.Second) // 上报间隔，5s

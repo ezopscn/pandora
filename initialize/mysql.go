@@ -51,8 +51,4 @@ func MySQL() {
 
 	// 设置全局数据库连接，方便后续使用
 	common.MySQLDB = db
-	common.SystemLog.Info("MySQL 连接初始完化成：", fmt.Sprintf("%s:%d/%s",
-		common.Config.MySQL.Host,
-		common.Config.MySQL.Port,
-		common.Config.MySQL.Database))
 }

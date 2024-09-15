@@ -5,7 +5,6 @@ import (
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"log"
 	"os"
 	"pandora/common"
 	"time"
@@ -63,12 +62,10 @@ func NewLogger(cfg common.LoggerConfiguration) *zap.SugaredLogger {
 func SystemLogger() {
 	logger := NewLogger(common.Config.Log.System)
 	common.SystemLog = logger
-	log.Println("系统日志初始化完成")
 }
 
 // 访问日志初始化
 func AccessLogger() {
 	logger := NewLogger(common.Config.Log.Access)
 	common.AccessLog = logger
-	log.Println("访问日志初始化完成")
 }

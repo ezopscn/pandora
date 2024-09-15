@@ -19,7 +19,5 @@ func Router() *gin.Engine {
 
 	rg := r.Group(common.SYSTEM_API_PREFIX)
 	route.PublicRoutes(rg) // 开放路由组
-
-	common.SystemLog.Info("系统路由初始化完成")
 	return r
 }

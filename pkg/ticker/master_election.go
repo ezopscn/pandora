@@ -11,7 +11,7 @@ import (
 // Master 竞选
 func MasterElectionTicker(rdb *redis.Client, id string) {
 	ctx := context.Background()
-	key := common.SYSTEM_TITLE + ":MASTER-ID"
+	key := common.RK_MASTER_ID
 	expire := time.Second * 30 // 过期 30 秒，意味着 Master 角色切换需要 30s
 	for {
 		// 获取指定 Key 的 Value
