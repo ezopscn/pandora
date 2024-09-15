@@ -35,5 +35,6 @@ var (
 	SystemName      = ""             // 系统名称
 	SystemVersion   = ""             // 系统版本
 	SystemUUID      = ""             // 进程标识
+	SystemTitle     = ""             // 系统标题
 	IsAlertMaster   = false          // 是否是 Alert Master
 )

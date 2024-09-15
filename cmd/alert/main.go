@@ -64,7 +64,6 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "参数化启动服务",
 	Run: func(cmd *cobra.Command, args []string) {
-
 		// 判断用户是否传递监听地址
 		var listenAddress string
 		if common.ListenAddress != "" {
@@ -116,10 +115,10 @@ var startCmd = &cobra.Command{
 		initialize.Redis()
 
 		// 客户端启动时注册
-		go ticker.HeartbeatTicker(common.RedisCache, strings.ToUpper(systemName)+"-UUID", common.SystemUUID)
+		go ticker.HeartbeatTicker(common.RedisCache, common.SystemUUID)
 
 		// 竞选 Master
-		go ticker.TryToBecomeMaster(common.RedisCache, common.SystemUUID)
+		go ticker.MasterElectionTicker(common.RedisCache, common.SystemUUID)
 
 		// 数据接口部分
 		r := initialize.AlertRouter() // 路由初始化
@@ -162,6 +161,7 @@ func execute() {
 	// 初始化变量
 	common.FS = config.Fs
 	common.SystemName = systemName
+	common.SystemTitle = strings.ToUpper(systemName)
 
 	// 读取版本号
 	version, err := common.FS.ReadFile(common.VersionFileName)

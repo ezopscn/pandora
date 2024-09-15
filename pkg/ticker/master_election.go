@@ -9,9 +9,9 @@ import (
 )
 
 // Master 竞选
-func TryToBecomeMaster(rdb *redis.Client, id string) {
+func MasterElectionTicker(rdb *redis.Client, id string) {
 	ctx := context.Background()
-	key := "PANDORA-ALERT-MASTER-ID"
+	key := common.SystemTitle + ":MASTER-ID"
 	expire := time.Second * 30 // 过期 30 秒，意味着 Master 角色切换需要 30s
 	for {
 		// 获取指定 Key 的 Value
