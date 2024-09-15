@@ -7,33 +7,33 @@ var Config Configuration
 
 // 配置结构体
 type Configuration struct {
-	Common CommonConfiguration `mapstructure:"common" json:"common"`
-	Server ServerConfiguration `mapstructure:"server" json:"server"`
-	Alert  AlertConfiguration  `mapstructure:"alert" json:"alert"`
-}
-
-// 公共配置
-type CommonConfiguration struct {
-	MySQL MySQLConfiguration `mapstructure:"mysql" json:"mysql"`
-	Redis RedisConfiguration `mapstructure:"redis" json:"redis"`
-}
-
-// Server 独有配置
-type ServerConfiguration struct {
 	System SystemConfiguration `mapstructure:"system" json:"system"`
 	Log    LogConfiguration    `mapstructure:"log" json:"log"`
-}
-
-// Alert 独有配置
-type AlertConfiguration struct {
-	System SystemConfiguration `mapstructure:"system" json:"system"`
-	Log    LogConfiguration    `mapstructure:"log" json:"log"`
+	MySQL  MySQLConfiguration  `mapstructure:"mysql" json:"mysql"`
+	Redis  RedisConfiguration  `mapstructure:"redis" json:"redis"`
 }
 
 // 系统配置
 type SystemConfiguration struct {
 	Listen string `mapstructure:"listen" json:"listen"`
 	Port   string `mapstructure:"port" json:"port"`
+}
+
+// 日志配置
+type LogConfiguration struct {
+	System LoggerConfiguration `mapstructure:"system" json:"system"`
+	Access LoggerConfiguration `mapstructure:"access" json:"access"`
+}
+
+// 日志类型配置
+type LoggerConfiguration struct {
+	Enabled    bool          `mapstructure:"enabled" json:"enabled"`
+	Level      zapcore.Level `mapstructure:"level" json:"level"`
+	Path       string        `mapstructure:"path" json:"path"`
+	MaxSize    int           `mapstructure:"max-size" json:"max_size"`
+	MaxAge     int           `mapstructure:"max-age" json:"max_age"`
+	MaxBackups int           `mapstructure:"max-backups" json:"max_backups"`
+	Compress   bool          `mapstructure:"compress" json:"compress"`
 }
 
 // 数据库配置
@@ -63,21 +63,4 @@ type RedisConfiguration struct {
 	MinIdleConns int    `mapstructure:"min-idle-conns" json:"min_idle_conns"`
 	MaxIdleConns int    `mapstructure:"max-idle-conns" json:"max_idle_conns"`
 	MaxIdleTime  int    `mapstructure:"max-idle-time" json:"max_idle_time"`
-}
-
-// 日志配置
-type LogConfiguration struct {
-	System LoggerConfiguration `mapstructure:"system" json:"system"`
-	Access LoggerConfiguration `mapstructure:"access" json:"access"`
-}
-
-// 日志类型配置
-type LoggerConfiguration struct {
-	Enabled    bool          `mapstructure:"enabled" json:"enabled"`
-	Level      zapcore.Level `mapstructure:"level" json:"level"`
-	Path       string        `mapstructure:"path" json:"path"`
-	MaxSize    int           `mapstructure:"max-size" json:"max_size"`
-	MaxAge     int           `mapstructure:"max-age" json:"max_age"`
-	MaxBackups int           `mapstructure:"max-backups" json:"max_backups"`
-	Compress   bool          `mapstructure:"compress" json:"compress"`
 }

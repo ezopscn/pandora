@@ -20,7 +20,7 @@ func Config() {
 	v.SetConfigType("yaml")
 
 	// 优先读取本地文件，然后才是 embed 打包的配置
-	filename := common.ConfigFileName
+	filename := common.SystemConfigFilename
 	exist := utils.FileExist(filename)
 	if exist {
 		fmt.Println("开始加载指定的配置文件:", filename)

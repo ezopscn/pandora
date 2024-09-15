@@ -5,6 +5,7 @@ import (
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"log"
 	"os"
 	"pandora/common"
 	"time"
@@ -56,4 +57,18 @@ func NewLogger(cfg common.LoggerConfiguration) *zap.SugaredLogger {
 	core := zapcore.NewCore(zapcore.NewConsoleEncoder(config), ws, cfg.Level)
 	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
 	return logger.Sugar()
+}
+
+// 系统日志初始化
+func SystemLogger() {
+	logger := NewLogger(common.Config.Log.System)
+	common.SystemLog = logger
+	log.Println("系统日志初始化完成")
+}
+
+// 访问日志初始化
+func AccessLogger() {
+	logger := NewLogger(common.Config.Log.Access)
+	common.AccessLog = logger
+	log.Println("访问日志初始化完成")
 }

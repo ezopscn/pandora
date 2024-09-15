@@ -11,7 +11,7 @@ import (
 // Master 竞选
 func MasterElectionTicker(rdb *redis.Client, id string) {
 	ctx := context.Background()
-	key := common.SystemTitle + ":MASTER-ID"
+	key := common.SYSTEM_TITLE + ":MASTER-ID"
 	expire := time.Second * 30 // 过期 30 秒，意味着 Master 角色切换需要 30s
 	for {
 		// 获取指定 Key 的 Value
@@ -19,11 +19,11 @@ func MasterElectionTicker(rdb *redis.Client, id string) {
 		if err1 != nil {
 			r2, _ := rdb.SetNX(ctx, key, id, expire).Result()
 			if r2 {
-				common.IsAlertMaster = true // 设置一个标识，用于其它判断
+				common.SystemMaster = true // 设置一个标识，用于其它判断
 			}
 		} else {
 			// 如果当前节点是 Master 标识，但是 id 却不匹配，则退出当前程序
-			if common.IsAlertMaster {
+			if common.SystemMaster {
 				if r1 != id {
 					common.SystemLog.Error("当前节点已经不是 Master，但还是占用 Master 角色，所以退出程序")
 					os.Exit(1)

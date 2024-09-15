@@ -13,15 +13,15 @@ import (
 func MySQL() {
 	// 数据库连接串
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&collation=%s&timeout=%dms&%s",
-		common.Config.Common.MySQL.Username,
-		common.Config.Common.MySQL.Password,
-		common.Config.Common.MySQL.Host,
-		common.Config.Common.MySQL.Port,
-		common.Config.Common.MySQL.Database,
-		common.Config.Common.MySQL.Charset,
-		common.Config.Common.MySQL.Collation,
-		common.Config.Common.MySQL.Timeout,
-		common.Config.Common.MySQL.ExtraParam)
+		common.Config.MySQL.Username,
+		common.Config.MySQL.Password,
+		common.Config.MySQL.Host,
+		common.Config.MySQL.Port,
+		common.Config.MySQL.Database,
+		common.Config.MySQL.Charset,
+		common.Config.MySQL.Collation,
+		common.Config.MySQL.Timeout,
+		common.Config.MySQL.ExtraParam)
 
 	// 连接数据库
 	db, err := gorm.Open(mysql.New(mysql.Config{
@@ -45,14 +45,14 @@ func MySQL() {
 
 	// 设置数据库连接池
 	sqlDB, _ := db.DB()
-	sqlDB.SetMaxOpenConns(common.Config.Common.MySQL.MaxOpenConns)
-	sqlDB.SetMaxIdleConns(common.Config.Common.MySQL.MaxIdleConns)
-	sqlDB.SetConnMaxIdleTime(time.Duration(common.Config.Common.MySQL.MaxIdleTime) * time.Minute)
+	sqlDB.SetMaxOpenConns(common.Config.MySQL.MaxOpenConns)
+	sqlDB.SetMaxIdleConns(common.Config.MySQL.MaxIdleConns)
+	sqlDB.SetConnMaxIdleTime(time.Duration(common.Config.MySQL.MaxIdleTime) * time.Minute)
 
 	// 设置全局数据库连接，方便后续使用
 	common.MySQLDB = db
 	common.SystemLog.Info("MySQL 连接初始完化成：", fmt.Sprintf("%s:%d/%s",
-		common.Config.Common.MySQL.Host,
-		common.Config.Common.MySQL.Port,
-		common.Config.Common.MySQL.Database))
+		common.Config.MySQL.Host,
+		common.Config.MySQL.Port,
+		common.Config.MySQL.Database))
 }
