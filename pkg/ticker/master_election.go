@@ -10,14 +10,14 @@ import (
 
 // Master 竞选
 func MasterElectionTicker(rdb *redis.Client, id string) {
-	ctx := context.Background()
+	rctx := context.Background()
 	key := common.RK_MASTER_ID
 	expire := time.Second * 30 // 过期 30 秒，意味着 Master 角色切换需要 30s
 	for {
 		// 获取指定 Key 的 Value
-		r1, err1 := rdb.Get(ctx, key).Result()
+		r1, err1 := rdb.Get(rctx, key).Result()
 		if err1 != nil {
-			r2, _ := rdb.SetNX(ctx, key, id, expire).Result()
+			r2, _ := rdb.SetNX(rctx, key, id, expire).Result()
 			if r2 {
 				common.SystemMaster = true // 设置一个标识，用于其它判断
 			}
@@ -29,7 +29,7 @@ func MasterElectionTicker(rdb *redis.Client, id string) {
 					os.Exit(1)
 				} else {
 					// 是 Master，且能够对上 ID，则更新过期时间
-					rdb.SetEx(ctx, key, id, expire)
+					rdb.SetEx(rctx, key, id, expire)
 				}
 			}
 		}
